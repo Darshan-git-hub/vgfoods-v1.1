@@ -39,7 +39,7 @@ const SignIn = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo:'https://vgfoods-v1-1.vercel.app/auth/callback'
+          redirectTo:'https://rlghpeuxrtidtcolzmkp.supabase.co/auth/v1/callback'
         }
       });
 
