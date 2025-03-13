@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { SessionContextProvider, useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "./lib/supabaseClient";
+
 import Navbar from "./components/Navbar";
 import Home from "./components/sections/Home";
 import About from "./components/sections/About";
@@ -82,7 +83,7 @@ const App = () => {
                       }
                     />
                     <Route
-                      path="/checkout/CheckoutForm"
+                      path="/checkout"
                       element={
                         <ProtectedRoute>
                           <CheckoutForm />
@@ -119,10 +120,10 @@ const App = () => {
   );
 };
 
+// Wrapper component for protecting PlaceOrder route
 const PlaceOrderWrapper = () => {
   const session = useSession();
   const userId = session?.user?.id || null;
-  console.log("PlaceOrderWrapper session:", session);
 
   if (!userId) {
     return <p className="text-center text-red-500">You must be signed in to place an order.</p>;
