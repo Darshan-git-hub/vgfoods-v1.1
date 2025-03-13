@@ -82,13 +82,13 @@ const PartyOrderMenu = () => {
 
   if (loading) {
     return (
-      <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4">
+      <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4 sm:px-4">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Loading Menu...</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 w-full sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="animate-pulse bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gray-300 dark:bg-gray-700" />
-              <div className="p-4">
+              <div className="h-24 sm:h-48 bg-gray-300 dark:bg-gray-700" />
+              <div className="p-3 sm:p-4">
                 <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-2" />
                 <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2" />
               </div>
@@ -100,14 +100,14 @@ const PartyOrderMenu = () => {
   }
 
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4">
+    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4 sm:px-4 relative">
       <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Party Order Menu</h1>
       <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 text-center">
         Select items for your party order.
       </p>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+        <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mb-8 sm:justify-center sm:items-center">
           <button
             onClick={() => setActiveCategory("all")}
             className={`px-4 py-2 rounded-lg ${activeCategory === "all" ? "bg-orange-600 text-white" : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"}`}
@@ -131,12 +131,12 @@ const PartyOrderMenu = () => {
             placeholder="Search items..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none sm:w-64"
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none w-full sm:w-64"
           />
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none sm:w-48"
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none w-full sm:w-48"
           >
             <option value="">Sort By</option>
             <option value="a-z">A to Z</option>
@@ -144,15 +144,9 @@ const PartyOrderMenu = () => {
             <option value="low-high">Price: Low to High</option>
             <option value="high-low">Price: High to Low</option>
           </select>
-          <button
-            onClick={handleBackToPartyOrder}
-            className="px-4 py-2 text-white bg-orange-500 hover:bg-orange-600 rounded-md font-semibold sm:w-auto"
-          >
-            Back to Party Order
-          </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 w-full sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredItems.map((item) => (
             <MenuCard 
               key={item.id} 
@@ -162,6 +156,15 @@ const PartyOrderMenu = () => {
             />
           ))}
         </div>
+      </div>
+
+      <div className="fixed bottom-4 left-0 right-0 px-4 sm:px-4">
+        <button
+          onClick={handleBackToPartyOrder}
+          className="w-full px-6 py-3 text-white bg-orange-500 hover:bg-orange-600 rounded-md font-semibold text-sm sm:w-auto sm:mx-auto sm:block sm:text-base shadow-lg"
+        >
+          Back to Party Order
+        </button>
       </div>
     </section>
   );
@@ -206,41 +209,54 @@ const MenuCard: React.FC<MenuCardProps> = ({ item, initialQuantity, setSelectedI
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-all hover:scale-105">
-      <img src={item.image} alt={item.name} className="w-full h-48 object-cover" />
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{item.name}</h3>
-          <span className="text-orange-600 font-semibold">£{item.price.toFixed(2)}</span>
-        </div>
-        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-          {item.description}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setQuantity((prev) => Math.max(0, prev - 1))}
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-              disabled={quantity === 0}
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="text-gray-900 dark:text-white w-8 text-center">{quantity}</span>
-            <button
-              onClick={() => setQuantity((prev) => prev + 1)}
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+      <div className="flex flex-row sm:flex-col items-center sm:items-stretch">
+        <img 
+          src={item.image} 
+          alt={item.name} 
+          className="w-16 h-16 sm:w-full sm:h-48 object-cover rounded-md sm:rounded-none flex-shrink-0" 
+        />
+        <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between sm:justify-start ml-3 sm:ml-0">
+          <div className="flex items-center justify-between sm:flex-col sm:items-start sm:mb-2 gap-2">
+            <div className="flex items-center gap-2">
+              {item.category === 'veg' ? (
+                <img src="https://freesvg.org/img/1531813273.png" alt="Veg" className="w-4 h-4 sm:w-6 sm:h-6" />
+              ) : (
+                <img src="https://freesvg.org/img/1531813245.png" alt="Non-Veg" className="w-4 h-4 sm:w-6 sm:h-6" />
+              )}
+              <h3 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white truncate">{item.name}</h3>
+            </div>
+            <span className="text-orange-600 font-semibold text-xs sm:text-base">£{item.price.toFixed(2)}</span>
           </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={handleAddToPartyOrder}
-              disabled={quantity === 0}
-              className={`px-4 py-2 rounded-lg ${quantity === 0 ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed" : "bg-orange-600 hover:bg-orange-700"} text-white transition-colors`}
-            >
-              Add to Party Order
-            </button>
+          <div className="flex flex-col sm:flex-col sm:mt-0 mt-1">
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-2">{item.description}</p>
+            <div className="flex items-center justify-between sm:flex-row sm:gap-2">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <button
+                  onClick={() => setQuantity((prev) => Math.max(0, prev - 1))}
+                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                </button>
+                <span className="text-gray-900 dark:text-white w-6 sm:w-8 text-center text-xs sm:text-base">{quantity}</span>
+                <button
+                  onClick={() => setQuantity((prev) => prev + 1)}
+                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                </button>
+              </div>
+              <button
+                onClick={handleAddToPartyOrder}
+                disabled={quantity === 0}
+                className={`w-full sm:w-auto px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-base rounded-lg ${
+                  quantity === 0 
+                    ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed' 
+                    : 'bg-orange-600 hover:bg-orange-700'
+                } text-white transition-colors`}
+              >
+                Add to Party Order
+              </button>
+            </div>
           </div>
         </div>
       </div>

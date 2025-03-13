@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Added useEffect
 import { supabase } from "../../../lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Plus, Minus, ArrowLeft } from "lucide-react"; // Added ArrowLeft
+import { Plus, Minus, ArrowLeft } from "lucide-react";
 import Sidebar from '../../sections/Sidebar';
 
 interface FormData {
@@ -29,6 +29,8 @@ interface SelectedItem {
 const Takeaway = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  
+  // Initial state from location
   const initialFormData: FormData = (state as { formData?: FormData; selectedItems?: SelectedItem[] })?.formData || {
     name: "",
     contact: "",
@@ -37,10 +39,28 @@ const Takeaway = () => {
     address: "",
   };
   const initialSelectedItems = (state as { selectedItems?: SelectedItem[] })?.selectedItems || [];
+
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>(initialSelectedItems);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  // Sync state with location changes
+  useEffect(() => {
+    const newFormData = (state as { formData?: FormData; selectedItems?: SelectedItem[] })?.formData || {
+      name: "",
+      contact: "",
+      pickupTime: "",
+      instructions: "",
+      address: "",
+    };
+    const newSelectedItems = (state as { selectedItems?: SelectedItem[] })?.selectedItems || [];
+    
+    console.log("Takeaway received updated state:", { newFormData, newSelectedItems });
+    
+    setFormData(newFormData);
+    setSelectedItems(newSelectedItems);
+  }, [state]); // Re-run when state (from useLocation) changes
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -51,7 +71,7 @@ const Takeaway = () => {
 
   const handleSelectItems = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("Attempting to navigate to /services/takeaway/menu with state:", { formData, selectedItems });
+    console.log("Navigating to /services/takeaway/menu with state:", { formData, selectedItems });
     try {
       navigate("/services/takeaway/menu", { state: { formData, selectedItems } });
     } catch (error) {
@@ -69,6 +89,7 @@ const Takeaway = () => {
         }
         return si;
       }).filter((si) => si.quantity > 0);
+      console.log("Updated selectedItems in Takeaway:", updatedItems); // Debug
       return updatedItems;
     });
   };
@@ -134,7 +155,6 @@ const Takeaway = () => {
     <>
       <Sidebar />
       <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4">
-        {/* Back Button (Mobile Only) */}
         <button
           onClick={() => navigate(-1)}
           className="md:hidden flex items-center text-gray-900 dark:text-white mb-4 self-start"

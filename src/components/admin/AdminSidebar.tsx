@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, ShoppingBag, Users, Settings, LogOut, Menu as MenuIcon } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Users, Percent, Settings, LogOut, Menu as MenuIcon } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const AdminSidebar = () => {
@@ -10,12 +10,10 @@ const AdminSidebar = () => {
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-    { icon: ShoppingBag, label: "All Orders", path: "/admin/orders/all" },
-    { icon: ShoppingBag, label: "Party Orders", path: "/admin/orders/party" },
-    { icon: ShoppingBag, label: "Takeaway Orders", path: "/admin/orders/takeaway" },
-    { icon: ShoppingBag, label: "Menu Orders", path: "/admin/orders/menu" },
-    { icon: ShoppingBag, label: "Dine-in Orders", path: "/admin/orders/dinein" },
+    { icon: ShoppingBag, label: "Orders", path: "/admin/orders/all" },
     { icon: Users, label: "Customers", path: "/admin/customers" },
+    { icon: Percent, label: "Discounts", path: "/admin/discounts" },
+    { icon: ShoppingBag, label: "Menu", path: "/admin/menu" }, // Added Menu item
     { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];
 

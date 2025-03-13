@@ -1,4 +1,3 @@
-// TakeawayMenu.tsx
 import { useState, useEffect } from "react";
 import { Plus, Minus } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -35,7 +34,14 @@ const TakeawayMenu = () => {
   const [sortOption, setSortOption] = useState("");
   const { state } = useLocation();
   const navigate = useNavigate();
-  const formData = (state as { formData?: FormData; selectedItems?: SelectedItem[] })?.formData;
+
+  const formData = (state as { formData?: FormData; selectedItems?: SelectedItem[] })?.formData || {
+    name: "",
+    contact: "",
+    pickupTime: "",
+    instructions: "",
+    address: ""
+  };
   const initialSelectedItems = (state as { selectedItems?: SelectedItem[] })?.selectedItems || [];
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>(initialSelectedItems);
 
@@ -78,7 +84,10 @@ const TakeawayMenu = () => {
   }, []);
 
   const handleBackToTakeaway = () => {
-    navigate("/services/takeaway", { state: { formData, selectedItems } });
+    // Log the current state to debug
+    console.log("Navigating back with state:", { formData, selectedItems });
+    // Navigate back with the current formData and selectedItems
+    navigate("/takeaway", { state: { formData, selectedItems } });
   };
 
   const filteredItems = items
@@ -94,9 +103,11 @@ const TakeawayMenu = () => {
 
   if (loading) {
     return (
-      <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Loading Menu...</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <section className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+          Loading Menu...
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="animate-pulse bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
               <div className="h-48 bg-gray-300 dark:bg-gray-700" />
@@ -112,59 +123,72 @@ const TakeawayMenu = () => {
   }
 
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center py-10 px-4">
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Takeaway Menu</h1>
-      <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 text-center">
-        Select items for your takeaway order.
-      </p>
+    <section className="py-16 bg-gray-50 dark:bg-gray-900 min-h-screen relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+          Takeaway Menu
+        </h1>
+        <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-8 text-center">
+          Select items for your takeaway order.
+        </p>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
-          <button
-            onClick={() => setActiveCategory("all")}
-            className={`px-4 py-2 rounded-lg ${activeCategory === "all" ? "bg-orange-600 text-white" : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"}`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setActiveCategory("veg")}
-            className={`px-4 py-2 rounded-lg ${activeCategory === "veg" ? "bg-orange-600 text-white" : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"}`}
-          >
-            Veg
-          </button>
-          <button
-            onClick={() => setActiveCategory("non-veg")}
-            className={`px-4 py-2 rounded-lg ${activeCategory === "non-veg" ? "bg-orange-600 text-white" : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"}`}
-          >
-            Non-Veg
-          </button>
-          <input
-            type="text"
-            placeholder="Search items..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none sm:w-64"
-          />
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none sm:w-48"
-          >
-            <option value="">Sort By</option>
-            <option value="a-z">A to Z</option>
-            <option value="z-a">Z to A</option>
-            <option value="low-high">Price: Low to High</option>
-            <option value="high-low">Price: High to Low</option>
-          </select>
-          <button
-            onClick={handleBackToTakeaway}
-            className="px-4 py-2 text-white bg-orange-500 hover:bg-orange-600 rounded-md font-semibold sm:w-auto"
-          >
-            Back to Takeaway Order
-          </button>
+        <div className="flex flex-col space-y-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-2">
+            <button
+              onClick={() => setActiveCategory("all")}
+              className={`px-3 py-1 md:px-4 md:py-2 rounded-lg text-sm md:text-base ${
+                activeCategory === "all"
+                  ? "bg-orange-600 text-white"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setActiveCategory("veg")}
+              className={`px-3 py-1 md:px-4 md:py-2 rounded-lg text-sm md:text-base ${
+                activeCategory === "veg"
+                  ? "bg-orange-600 text-white"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+              }`}
+            >
+              Veg
+            </button>
+            <button
+              onClick={() => setActiveCategory("non-veg")}
+              className={`px-3 py-1 md:px-4 md:py-2 rounded-lg text-sm md:text-base ${
+                activeCategory === "non-veg"
+                  ? "bg-orange-600 text-white"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200"
+              }`}
+            >
+              Non-Veg
+            </button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <input
+              type="text"
+              placeholder="Search items..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:w-64 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none text-sm md:text-base"
+            />
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="w-full sm:w-48 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none text-sm md:text-base"
+            >
+              <option value="">Sort By</option>
+              <option value="a-z">A to Z</option>
+              <option value="z-a">Z to A</option>
+              <option value="low-high">Price: Low to High</option>
+              <option value="high-low">Price: High to Low</option>
+            </select>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredItems.map((item) => (
             <MenuCard 
               key={item.id} 
@@ -175,11 +199,21 @@ const TakeawayMenu = () => {
           ))}
         </div>
       </div>
+
+      {/* Fixed Back to Takeaway Button */}
+      <div className="fixed bottom-4 left-0 right-0 px-4">
+        <button
+          onClick={handleBackToTakeaway}
+          className="w-full sm:w-auto mx-auto block px-6 py-3 text-white bg-orange-500 hover:bg-orange-600 rounded-md font-semibold text-sm md:text-base shadow-lg"
+        >
+          Back to Takeaway Order
+        </button>
+      </div>
     </section>
   );
 
   function getInitialQuantity(itemId: string): number {
-    const selected = initialSelectedItems.find((si) => si.item.id === itemId);
+    const selected = selectedItems.find((si) => si.item.id === itemId);
     return selected ? selected.quantity : 0;
   }
 };
@@ -209,26 +243,40 @@ const MenuCard: React.FC<MenuCardProps> = ({ item, initialQuantity, setSelectedI
       
       setSelectedItems((prevItems) => {
         const updatedItems = prevItems.filter((si) => si.item.id !== item.id);
-        return [...updatedItems, newItem];
+        const newSelectedItems = [...updatedItems, newItem];
+        console.log("Updated selectedItems after adding:", newSelectedItems); // Debug log
+        return newSelectedItems;
       });
       
       toast.success(`Added ${item.name} to your takeaway order`);
     }
   };
 
+  const handleRemoveFromTakeaway = () => {
+    if (quantity > 0) {
+      setSelectedItems((prevItems) => {
+        const updatedItems = prevItems.filter((si) => si.item.id !== item.id);
+        console.log("Updated selectedItems after removing:", updatedItems); // Debug log
+        return updatedItems;
+      });
+      setQuantity(0);
+      toast.success(`Removed ${item.name} from your takeaway order`);
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-all hover:scale-105">
-      <img src={item.image} alt={item.name} className="w-full h-48 object-cover" />
-      <div className="p-4">
+      <img src={item.image} alt={item.name} className="w-full h-40 md:h-48 object-cover" />
+      <div className="p-3 md:p-4">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{item.name}</h3>
-          <span className="text-orange-600 font-semibold">£{item.price.toFixed(2)}</span>
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">{item.name}</h3>
+          <span className="text-orange-600 font-semibold text-sm md:text-base">£{item.price.toFixed(2)}</span>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2">
           {item.description}
         </p>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-col sm:flex-row gap-2">
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setQuantity((prev) => Math.max(0, prev - 1))}
@@ -237,7 +285,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ item, initialQuantity, setSelectedI
             >
               <Minus className="w-4 h-4" />
             </button>
-            <span className="text-gray-900 dark:text-white w-8 text-center">{quantity}</span>
+            <span className="text-gray-900 dark:text-white w-8 text-center text-sm md:text-base">{quantity}</span>
             <button
               onClick={() => setQuantity((prev) => prev + 1)}
               className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -245,14 +293,26 @@ const MenuCard: React.FC<MenuCardProps> = ({ item, initialQuantity, setSelectedI
               <Plus className="w-4 h-4" />
             </button>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex flex-col sm:flex-row space-x-0 sm:space-x-2 w-full sm:w-auto">
             <button
               onClick={handleAddToTakeaway}
               disabled={quantity === 0}
-              className={`px-4 py-2 rounded-lg ${quantity === 0 ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed" : "bg-orange-600 hover:bg-orange-700"} text-white transition-colors`}
+              className={`w-full sm:w-auto px-3 py-1 md:px-4 md:py-2 rounded-lg text-sm md:text-base ${
+                quantity === 0
+                  ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
+                  : "bg-orange-600 hover:bg-orange-700"
+              } text-white transition-colors`}
             >
-              Add to Takeaway Menu
+              Add to Takeaway
             </button>
+            {quantity > 0 && (
+              <button
+                onClick={handleRemoveFromTakeaway}
+                className="w-full sm:w-auto mt-2 sm:mt-0 px-3 py-1 md:px-4 md:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm md:text-base"
+              >
+                Remove
+              </button>
+            )}
           </div>
         </div>
       </div>
